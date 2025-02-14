@@ -44,8 +44,8 @@
 
 
 <script setup lang="ts">
-import { PencilIcon, TrashIcon, PlusCircleIcon } from 'lucide-vue-next';
 import { useUserStore } from '@/store/UserStore';
+import { PencilIcon, PlusCircleIcon, TrashIcon } from 'lucide-vue-next';
 import { computed, onMounted } from 'vue';
 
 const store = useUserStore();
@@ -58,5 +58,6 @@ onMounted(() => {
 const users = computed(() => store.users);
 const deleteUser = async (id: number) => {
     await store.removeUser(id);
+    await store.fetchUsers();
 };
 </script>
