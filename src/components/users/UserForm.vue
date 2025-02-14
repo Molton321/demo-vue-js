@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import UserService from "@/service/UserService";
+import { useUserStore } from '@/store/UserStore';
 import { UserValidator } from "@/utils/UserValidators";
+import Swal from "sweetalert2";
 import { onMounted, reactive, ref } from "vue";
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{ userId?: number }>();
 
@@ -18,6 +20,8 @@ const user = reactive({
 const errors = reactive<Record<string, string>>({});
 const isSubmitting = ref(false);
 const successMessage = ref("");
+const store = useUserStore();
+const router = useRouter();
 
 const validateField = (field: keyof typeof user) => {
   const result = UserValidator.validateField(field, user[field]);
@@ -39,8 +43,13 @@ const validateAllFields = () => {
 onMounted(async () => {
   if (props.userId) {
     try {
-      const fetchedUser = await UserService.getUser(props.userId);
-      Object.assign(user, fetchedUser);
+      const response = await store.getUser(props.userId);
+      if (response.status == 200) {
+        let fetchedUser = response.data
+        Object.assign(user, fetchedUser);
+      }
+
+
     } catch (error) {
       console.error("Error al cargar usuario:", error);
     }
@@ -57,19 +66,39 @@ const submitForm = async () => {
   successMessage.value = "";
 
   try {
+    let response;
     if (props.userId) {
-      await UserService.updateUser(props.userId, user);
-      successMessage.value = "Usuario actualizado exitosamente.";
+      response = await store.editUser(props.userId, user);
     } else {
-      await UserService.createUser(user);
-      successMessage.value = "Usuario creado exitosamente.";
+      response = await store.addUser(user);
+    }
+
+    if (response.status === 200 || response.status === 201) {
+      Swal.fire({
+        title: 'Éxito',
+        text: props.userId ? 'Usuario actualizado con éxito ✅' : 'Usuario creado con éxito ✅',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: `❌ Código ${response.status}: ${response.data?.message || 'Ocurrió un error'}`,
+        icon: 'error',
+        confirmButtonText: 'Intentar de nuevo'
+      });
     }
   } catch (error) {
-    console.error("Error en la operación:", error);
-    successMessage.value = "Error en la operación.";
+    Swal.fire({
+      title: 'Error',
+      text: '❌ Error inesperado en la operación.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
   } finally {
     isSubmitting.value = false;
   }
+  router.push('/users');
 };
 </script>
 
@@ -136,8 +165,8 @@ const submitForm = async () => {
           </button>
         </div>
 
-        <p v-if="successMessage" class="text-green-600 font-medium text-center col-span-1 md:col-span-2">{{
-          successMessage }}</p>
+        <!-- <p v-if="successMessage" class="text-green-600 font-medium text-center col-span-1 md:col-span-2">{{
+          successMessage }}</p> -->
       </form>
     </div>
   </div>
