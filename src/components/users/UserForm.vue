@@ -78,14 +78,16 @@ const submitForm = async () => {
         title: 'Éxito',
         text: props.userId ? 'Usuario actualizado con éxito ✅' : 'Usuario creado con éxito ✅',
         icon: 'success',
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
+        timer: 3000
       });
     } else {
       Swal.fire({
         title: 'Error',
         text: `❌ Código ${response.status}: ${response.data?.message || 'Ocurrió un error'}`,
         icon: 'error',
-        confirmButtonText: 'Intentar de nuevo'
+        confirmButtonText: 'Intentar de nuevo',
+        timer: 3000
       });
     }
   } catch (error) {
@@ -93,7 +95,8 @@ const submitForm = async () => {
       title: 'Error',
       text: '❌ Error inesperado en la operación.',
       icon: 'error',
-      confirmButtonText: 'OK'
+      confirmButtonText: 'OK',
+      timer: 3000
     });
   } finally {
     isSubmitting.value = false;
@@ -164,9 +167,6 @@ const submitForm = async () => {
             {{ isSubmitting ? "Enviando..." : props.userId ? "Actualizar" : "Crear" }}
           </button>
         </div>
-
-        <!-- <p v-if="successMessage" class="text-green-600 font-medium text-center col-span-1 md:col-span-2">{{
-          successMessage }}</p> -->
       </form>
     </div>
   </div>
