@@ -29,6 +29,11 @@ const router = createRouter({
                     component: () => import('@/views/pages/users/UserUpdate.vue')
                 },
                 {
+                    path: '/login2',
+                    name: 'login2',
+                    component: () => import('@/views/pages/auth/Login2.vue')
+                },
+                {
                     path: '/uikit/formlayout',
                     name: 'formlayout',
                     component: () => import('@/views/uikit/FormLayout.vue')
