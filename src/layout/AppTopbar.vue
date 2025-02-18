@@ -10,6 +10,23 @@ const authStore = useAuthStore();
 let isAuthenticated = computed(() => authStore.isAuthenticated);
 let user = computed(() => authStore.user);
 
+//Socket io
+import { io } from 'socket.io-client';
+import { onMounted, onUnmounted, ref } from 'vue';
+
+const socket = io('http://localhost:5000'); // Cambia la URL por la de tu servidor
+const message = ref('');
+
+onMounted(() => {
+    socket.on('new_notification', (data) => {
+        message.value = data;
+        console.log("Llegando notificaciones " + JSON.stringify(data));
+    });
+});
+
+onUnmounted(() => {
+    socket.disconnect();
+});
 
 </script>
 
