@@ -7,15 +7,16 @@ class AuthService {
     async login(user: User): Promise<User> {
         try {
             console.log("servicio1")
+            console.log(API_URL)
             const response = await axios.post<{ user: User; token: string }>(`${API_URL}/login`, user);
-
+            console.log("luego")
             if (response.data.token) {
                 localStorage.setItem('user', JSON.stringify(response.data));
             }
             console.log("servicio2")
             return response.data as User;
         } catch (error) {
-            throw new Error('Login failed. Please check your credentials.');
+            throw new Error('Login failed. Please check your credentials. ' + error);
         }
     }
 

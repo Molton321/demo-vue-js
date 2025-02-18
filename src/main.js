@@ -35,10 +35,12 @@ app.mount('#app');
 axios.interceptors.request.use(
     (config) => {
         // Definir rutas que deben estar excluidas del token
-        const excepciones = ['/login', '/public']; // Rutas a excluir
+        const excepciones = ['login', 'public']; // Palabras clave a excluir
 
-        // Verificar si la URL de la solicitud no está en la lista de excepciones
-        if (!excepciones.includes(config.url)) {
+        // Verificar si la URL de la solicitud contiene alguna de las palabras clave en la lista de excepciones
+        const isExcepcion = excepciones.some(keyword => config.url.includes(keyword));
+
+        if (!isExcepcion) {
             // Obtener el token del almacenamiento local (o de donde lo guardes)
 
             const user = JSON.parse(localStorage.getItem('user'));
