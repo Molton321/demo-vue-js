@@ -8,22 +8,20 @@ export const useUserStore = defineStore('userStore', {
     }),
     actions: {
         async fetchUsers() {
-            let response = await UserService.getUsers();
-            this.users = response.data
+            this.users = await UserService.getUsers();
             return this.users
         },
-        async getUser(id: number) {
-            return await UserService.getUser(id);
-        },
         async addUser(user: User) {
-            return await UserService.createUser(user);
+            await UserService.createUser(user);
+            return await this.fetchUsers();
         },
         async editUser(id: number, user: User) {
-            return await UserService.updateUser(id, user);
-
+            await UserService.updateUser(id, user);
+            return await this.fetchUsers();
         },
         async removeUser(id: number) {
-            return await UserService.deleteUser(id);
+            await UserService.deleteUser(id);
+            return await this.fetchUsers();
         },
     }
 });

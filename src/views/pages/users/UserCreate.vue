@@ -7,4 +7,11 @@
 
 <script setup lang="ts">
 import UserForm from '@/components/users/UserForm.vue';
+import { useUserStore } from '@/store/UserStore';
+
+const store = useUserStore();
+
+const createUser = async (user) => {
+    await store.addUser(user);
+};
 </script>
