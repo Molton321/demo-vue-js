@@ -1,7 +1,5 @@
 import AppLayout from '@/layout/AppLayout.vue';
-import { useAuthStore } from '@/store/Auth';
 import { createRouter, createWebHistory } from 'vue-router';
-
 
 const router = createRouter({
     history: createWebHistory(),
@@ -18,10 +16,7 @@ const router = createRouter({
                 {
                     path: '/users',
                     name: 'users',
-                    component: () => import('@/views/pages/users/UserListView.vue'),
-                    meta: {
-                        requiresAuth: true // Esta ruta requiere autenticación
-                    }
+                    component: () => import('@/views/pages/users/UserListView.vue')
                 },
                 {
                     path: '/users/create',
@@ -32,11 +27,6 @@ const router = createRouter({
                     path: '/users/update/:id',
                     name: 'users update',
                     component: () => import('@/views/pages/users/UserUpdate.vue')
-                },
-                {
-                    path: '/login2',
-                    name: 'login2',
-                    component: () => import('@/views/pages/auth/Login2.vue')
                 },
                 {
                     path: '/uikit/formlayout',
@@ -159,18 +149,5 @@ const router = createRouter({
         }
     ]
 });
-
-// Configurar el guardián de ruta
-router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore();  // Obtener el estado de autenticación desde Pinia
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        // Si la ruta requiere autenticación y el usuario no está logueado, redirigir al login
-        next({ path: '/login2' });
-    } else {
-        // Si no requiere autenticación o el usuario está logueado, continuar con la ruta
-        next();
-    }
-});
-
 
 export default router;
